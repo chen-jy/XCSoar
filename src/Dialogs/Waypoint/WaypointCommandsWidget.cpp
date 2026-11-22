@@ -278,6 +278,10 @@ WaypointCommandsWidget::Prepare(ContainerWindow &parent,
     form->SetModalResult(mrOK);
   });
 
+  ring_button = AddButton(_("Add Waypoint Ring"), [this](){
+    if (AddWaypointRing(*waypoint))
+      CommitParentSearchAndCloseForm();
+  });
 
   set_active_button = AddButton(_("Set Active Frequency"), [this](){
     ActionInterface::SetActiveFrequency(waypoint->radio_frequency,

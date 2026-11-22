@@ -122,3 +122,20 @@ bool
 PopupNearestWaypointDetails(Waypoints &waypoints,
                             const GeoPoint &location,
                             double range);
+
+/**
+ * Prompts for a distance and adds a ring around the given waypoint. The list
+ * of rings is saved to the profile and the map is updated. If the list is
+ * full, does not add a ring and shows an error message instead.
+ *
+ * @return true if a ring was added
+ */
+bool
+AddWaypointRing(const Waypoint &waypoint);
+
+/**
+ * Shows the list of waypoint rings, where they can be added, edited, and
+ * deleted.
+ */
+void
+dlgWaypointRingsShowModal();

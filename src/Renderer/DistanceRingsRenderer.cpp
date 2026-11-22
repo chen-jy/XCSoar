@@ -9,8 +9,9 @@
 #include "Screen/Layout.hpp"
 #include "Formatter/UserUnits.hpp"
 #include "Units/Units.hpp"
+#include "util/StaticString.hxx"
 
-#include <span>
+#include <cmath>
 
 // Ring radius presets in meters
 
@@ -68,6 +69,7 @@ static constexpr double RINGS_NM_VERY_WIDE[] = {
 };
 
 static constexpr unsigned MIN_RING_RADIUS_PX = 20;
+static constexpr unsigned MAX_RING_RADIUS_PX = 100000;
 
 static std::span<const double>
 SelectRingSet(double screen_distance_m) noexcept
@@ -109,6 +111,32 @@ SelectRingSet(double screen_distance_m) noexcept
 }
 
 void
+FormatRingDistance(double radius, char *buffer) noexcept
+{
+  double user_val = Units::ToUserUnit(radius, Units::GetUserDistanceUnit());
+  FormatUserDistance(radius, buffer, true,
+                     (user_val - static_cast<int>(user_val)) < 0.01 ? 0 : 1);
+}
+
+static void
+DrawRingLabel(Canvas &canvas, const PixelRect &screen_rect, PixelPoint anchor,
+              const char *text) noexcept
+{
+  PixelSize text_size = canvas.CalcTextSize(text);
+  PixelPoint label_pos{
+    anchor.x - static_cast<int>(text_size.width) / 2,
+    anchor.y - static_cast<int>(text_size.height) / 2,
+  };
+
+  // Only draw a label if it's within screen bounds
+  if (label_pos.x >= screen_rect.left &&
+      label_pos.x + static_cast<int>(text_size.width) <= screen_rect.right &&
+      label_pos.y >= screen_rect.top &&
+      label_pos.y + static_cast<int>(text_size.height) <= screen_rect.bottom)
+    RenderShadowedText(canvas, text, label_pos, false);
+}
+
+void
 DrawDistanceRings(Canvas &canvas,
                   const WindowProjection &projection,
                   const GeoPoint &aircraft_pos,
@@ -138,25 +166,63 @@ DrawDistanceRings(Canvas &canvas,
     canvas.DrawCircle(aircraft_px, radius_px);
 
     // Label at topmost point of the ring on screen
-    const int label_center_x = aircraft_px.x;
-    const int label_center_y = aircraft_px.y - (int)radius_px;
-
-    const double user_val = Units::ToUserUnit(radius_m, Units::GetUserDistanceUnit());
     char buf[32];
-    FormatUserDistance(radius_m, buf, true, (user_val - (int)user_val) < 0.01 ? 0 : 1);
-    const PixelSize text_size = canvas.CalcTextSize(buf);
+    FormatRingDistance(radius_m, buf);
+    DrawRingLabel(canvas, screen_rect,
+                  {aircraft_px.x, aircraft_px.y - (int)radius_px}, buf);
+  }
+}
 
-    const PixelPoint label_pos{
-      label_center_x - (int)text_size.width / 2,
-      label_center_y - (int)text_size.height / 2,
-    };
+void
+DrawWaypointRings(Canvas &canvas, const WindowProjection &projection,
+                  std::span<const WaypointRing> rings,
+                  const MapLook &look) noexcept
+{
+  if (!projection.IsValid() || rings.empty())
+    return;
 
-    // Only draw label if it's within screen bounds
-    if (label_pos.x >= screen_rect.left &&
-        label_pos.x + (int)text_size.width <= screen_rect.right &&
-        label_pos.y >= screen_rect.top &&
-        label_pos.y + (int)text_size.height <= screen_rect.bottom) {
-      RenderShadowedText(canvas, buf, label_pos, false);
-    }
+  canvas.Select(look.waypoint_rings_pen);
+  canvas.SelectHollowBrush();
+  canvas.Select(*look.overlay.overlay_font);
+
+  PixelRect screen_rect = projection.GetScreenRect();
+  PixelPoint screen_center = screen_rect.GetCenter();
+  unsigned min_radius_px = Layout::Scale(MIN_RING_RADIUS_PX);
+
+  for (const WaypointRing &ring : rings) {
+    if (!ring.location.IsValid())
+      continue;
+
+    unsigned radius_px = projection.GeoToScreenDistance(ring.radius);
+    if (radius_px < min_radius_px || radius_px > MAX_RING_RADIUS_PX)
+      continue;
+
+    PixelPoint center_px = projection.GeoToScreen(ring.location);
+    if (!CircleOutlineIntersectsRect(center_px, radius_px, screen_rect))
+      continue;
+
+    canvas.DrawCircle(center_px, radius_px);
+
+    // Put the label on the point of the ring that is closest to the center of
+    // the screen
+    double dx = screen_center.x - center_px.x;
+    double dy = screen_center.y - center_px.y;
+    double distance = std::hypot(dx, dy);
+
+    PixelPoint anchor = distance >= 1
+      ? PixelPoint{center_px.x + static_cast<int>(dx / distance * radius_px),
+                   center_px.y + static_cast<int>(dy / distance * radius_px)}
+      : PixelPoint{center_px.x, center_px.y - static_cast<int>(radius_px)};
+
+    char distance_text[32];
+    FormatRingDistance(ring.radius, distance_text);
+
+    StaticString<80> text;
+    if (ring.name[0] != '\0')
+      text.Format("%s %s", ring.name, distance_text);
+    else
+      text = distance_text;
+
+    DrawRingLabel(canvas, screen_rect, anchor, text);
   }
 }

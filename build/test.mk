@@ -175,6 +175,7 @@ ifeq ($(TARGET_IS_ANDROID),n)
 # These programs are broken on Android because they require Java code
 TEST_NAMES += \
 	TestProfile \
+	TestWaypointRings \
 	TestSession \
 	TestDriver
 endif
@@ -1428,6 +1429,15 @@ TEST_WAYPOINT_ELEVATION_SOURCES = \
 	$(TEST_SRC_DIR)/TestWaypointElevation.cpp
 TEST_WAYPOINT_ELEVATION_DEPENDS = TERRAIN WAYPOINT GLIDE PROFILE OPERATION IO OS ZZIP GEO MATH UTIL
 $(eval $(call link-program,TestWaypointElevation,TEST_WAYPOINT_ELEVATION))
+
+TEST_WAYPOINT_RINGS_SOURCES = \
+	$(SRC)/Renderer/WaypointRingSettings.cpp \
+	$(SRC)/Profile/WaypointRingProfile.cpp \
+	$(TEST_SRC_DIR)/FakeLogFile.cpp \
+	$(TEST_SRC_DIR)/tap.c \
+	$(TEST_SRC_DIR)/TestWaypointRings.cpp
+TEST_WAYPOINT_RINGS_DEPENDS = GEO IO MATH OS PROFILE UTIL
+$(eval $(call link-program,TestWaypointRings,TEST_WAYPOINT_RINGS))
 
 TEST_VARIO_SYNTHESISER_SOURCES = \
 	$(SRC)/Audio/ToneSynthesiser.cpp \
@@ -2768,6 +2778,7 @@ RUN_MAP_WINDOW_SOURCES = \
 	$(SRC)/Renderer/WaypointRenderer.cpp \
 	$(SRC)/Renderer/WaypointRendererSettings.cpp \
 	$(SRC)/Renderer/WaypointLabelList.cpp \
+	$(SRC)/Renderer/WaypointRingSettings.cpp \
 	$(SRC)/Renderer/WindArrowRenderer.cpp \
 	$(SRC)/Renderer/WaveRenderer.cpp \
 	$(SRC)/Engine/Observation/Store.cpp \
@@ -2816,6 +2827,7 @@ RUN_MAP_WINDOW_SOURCES = \
 	$(SRC)/Profile/TerrainConfig.cpp \
 	$(SRC)/Profile/Screen.cpp \
 	$(SRC)/Profile/FlarmProfile.cpp \
+	$(SRC)/Profile/WaypointRingProfile.cpp \
 	$(SRC)/Repository/FileType.cpp \
 	$(SRC)/Waypoint/HomeGlue.cpp \
 	$(SRC)/Waypoint/LastUsed.cpp \

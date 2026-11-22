@@ -11,6 +11,7 @@
 #include "Engine/Task/Shapes/FAITriangleSettings.hpp"
 #include "Terrain/TerrainSettings.hpp"
 #include "Weather/Rasp/ContourDensity.hpp"
+#include "Renderer/WaypointRingSettings.hpp"
 
 #include <type_traits>
 
@@ -167,6 +168,9 @@ struct MapSettings {
 
   /** Display distance rings around the aircraft */
   bool distance_rings_enabled;
+
+  /** Distance rings around selected waypoints */
+  WaypointRingSettings waypoint_rings;
 
   /** Show FinalGlideBar mc0 arrow */
   bool final_glide_bar_mc0_enabled;

@@ -58,6 +58,7 @@ struct MapLook {
   Brush tbm_brush;
 
   Pen distance_rings_pen;
+  Pen waypoint_rings_pen;
 
   Pen contest_pens[3];
 
