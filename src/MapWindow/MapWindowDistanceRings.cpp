@@ -8,7 +8,12 @@
 void
 MapWindow::DrawDistanceRings(Canvas &canvas) const noexcept
 {
-  if (!GetMapSettings().distance_rings_enabled)
+  const MapSettings &settings = GetMapSettings();
+  if (settings.waypoint_rings.enabled)
+    DrawWaypointRings(canvas, render_projection,
+                      settings.waypoint_rings.GetRings(), look);
+
+  if (!settings.distance_rings_enabled)
     return;
 
   const auto &basic = Basic();

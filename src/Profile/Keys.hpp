@@ -171,6 +171,8 @@ constexpr std::string_view EnableTAGauge = "EnableTAGauge";
 constexpr std::string_view TAPosition = "TAPosition";
 constexpr std::string_view EnableThermalProfile = "EnableThermalProfile";
 constexpr std::string_view DistanceRingsEnabled = "DistanceRingsEnabled";
+constexpr std::string_view WaypointRingsEnabled = "WaypointRingsEnabled";
+constexpr std::string_view WaypointRingCount = "WaypointRingCount";
 constexpr std::string_view GliderScreenPosition = "GliderScreenPosition";
 constexpr std::string_view SetSystemTimeFromGPS = "SetSystemTimeFromGPS";
 

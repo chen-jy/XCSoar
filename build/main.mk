@@ -117,6 +117,7 @@ DIALOG_SOURCES = \
 	$(SRC)/Dialogs/Waypoint/WaypointList.cpp \
 	$(SRC)/Dialogs/Waypoint/GetWaypointReachability.cpp \
 	$(SRC)/Dialogs/Waypoint/NearestWaypoint.cpp \
+	$(SRC)/Dialogs/Waypoint/WaypointRing.cpp \
 	\
 	$(SRC)/Dialogs/Settings/Panels/AirspaceConfigPanel.cpp \
 	$(if $(filter y,$(HAVE_HTTP)),$(SRC)/Dialogs/Settings/Panels/NOTAMConfigPanel.cpp) \
@@ -414,6 +415,7 @@ XCSOAR_SOURCES := \
 	$(SRC)/Renderer/WaypointRenderer.cpp \
 	$(SRC)/Renderer/WaypointRendererSettings.cpp \
 	$(SRC)/Renderer/WaypointLabelList.cpp \
+	$(SRC)/Renderer/WaypointRingSettings.cpp \
 	$(SRC)/Renderer/WindArrowRenderer.cpp \
 	$(SRC)/Renderer/NextArrowRenderer.cpp \
 	$(SRC)/Renderer/WaveRenderer.cpp \
@@ -558,6 +560,7 @@ XCSOAR_SOURCES := \
 	$(if $(filter y,$(HAVE_HTTP)),$(SRC)/Profile/NotamConfig.cpp) \
 	$(SRC)/Profile/TerrainConfig.cpp \
 	$(SRC)/Profile/FlarmProfile.cpp \
+	$(SRC)/Profile/WaypointRingProfile.cpp \
 	\
 	$(SRC)/Repository/CountryName.cpp \
 	$(SRC)/Repository/FileRepository.cpp \

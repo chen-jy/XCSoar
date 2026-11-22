@@ -57,6 +57,10 @@ MapLook::Initialise(const MapSettings &settings,
   distance_rings_pen.Create(Layout::ScalePenWidth(1),
                             HasColors() ? COLOR_GRAY : COLOR_BLACK);
 
+  static constexpr Color clrPurple{0x80, 0x00, 0x80};
+  waypoint_rings_pen.Create(Layout::ScalePenWidth(2),
+                            HasColors() ? clrPurple : COLOR_BLACK);
+
   contest_pens[0].Create(Layout::ScalePenWidth(1) + 2, COLOR_RED);
   contest_pens[1].Create(Layout::ScalePenWidth(1) + 1, COLOR_ORANGE);
   contest_pens[2].Create(Layout::ScalePenWidth(1), COLOR_BLUE);

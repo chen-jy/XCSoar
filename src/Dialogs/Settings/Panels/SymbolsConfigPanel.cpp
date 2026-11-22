@@ -10,6 +10,7 @@
 #include "Widget/RowFormWidget.hpp"
 #include "UIGlobals.hpp"
 #include "MapSettings.hpp"
+#include "Dialogs/Waypoint/WaypointDialogs.hpp"
 
 enum ControlIndex {
   DISPLAY_TRACK_BEARING,
@@ -25,6 +26,8 @@ enum ControlIndex {
   WIND_ARROW_STYLE,
   SKYLINES_TRAFFIC_MAP_MODE,
   DISTANCE_RINGS_ENABLED,
+  WAYPOINT_RINGS_ENABLED,
+  WAYPOINT_RINGS_LIST,
 };
 
 class SymbolsConfigPanel final
@@ -203,6 +206,18 @@ SymbolsConfigPanel::Prepare([[maybe_unused]] ContainerWindow &parent,
              _("Display distance rings around the aircraft on the map."),
              settings_map.distance_rings_enabled);
 
+  AddBoolean(C_("Setting", "Waypoint rings"),
+             _("Display distance rings around selected waypoints on the map."),
+             settings_map.waypoint_rings.enabled);
+
+  AddButton(_("Edit waypoint rings"), [this](){
+    dlgWaypointRingsShowModal();
+
+    // Automatically enable waypoint rings when one is added
+    LoadValue(WAYPOINT_RINGS_ENABLED,
+              CommonInterface::GetMapSettings().waypoint_rings.enabled);
+  });
+
   ShowTrailControls(settings_map.trail.length != TrailSettings::Length::OFF);
 }
 
@@ -248,6 +263,10 @@ SymbolsConfigPanel::Save(bool &_changed) noexcept
 
   changed |= SaveValue(DISTANCE_RINGS_ENABLED, ProfileKeys::DistanceRingsEnabled,
                        settings_map.distance_rings_enabled);
+
+  changed |= SaveValue(WAYPOINT_RINGS_ENABLED,
+                       ProfileKeys::WaypointRingsEnabled,
+                       settings_map.waypoint_rings.enabled);
 
   _changed |= changed;
 

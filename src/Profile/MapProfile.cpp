@@ -8,6 +8,7 @@
 #include "Map.hpp"
 #include "Keys.hpp"
 #include "MapSettings.hpp"
+#include "WaypointRingProfile.hpp"
 
 #include <algorithm> // for std::clamp()
 
@@ -121,6 +122,7 @@ Profile::Load(const ProfileMap &map, MapSettings &settings)
 
   map.Get(ProfileKeys::EnableThermalProfile, settings.show_thermal_profile);
   map.Get(ProfileKeys::DistanceRingsEnabled, settings.distance_rings_enabled);
+  Load(map, settings.waypoint_rings);
   map.Get(ProfileKeys::EnableFinalGlideBarMC0,
           settings.final_glide_bar_mc0_enabled);
   map.GetEnum(ProfileKeys::FinalGlideBarDisplayMode,

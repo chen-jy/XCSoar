@@ -44,6 +44,7 @@ MapSettings::SetDefaults() noexcept
   fade_traffic = true;
   show_thermal_profile = true;
   distance_rings_enabled = false;
+  waypoint_rings.SetDefaults();
   final_glide_bar_mc0_enabled = true;
   final_glide_bar_display_mode = FinalGlideBarDisplayMode::ON;
   vario_bar_enabled = false;

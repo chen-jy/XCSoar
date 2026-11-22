@@ -36,14 +36,15 @@ class WaypointCommandsWidget final
     REMOVE_FROM_TASK,
 	SET_NEW_HOME,
 	PAN_WAYPOINT,
+	ADD_WAYPOINT_RING,
 	SET_ACTIVE_FREQUENCY,
 	SET_STANDBY_FREQUENCY,
 	EDIT,
   };
 
   Button *replace_button, *insert_button, *append_button, *remove_button,
-         *home_button, *pan_button,
-         *set_active_button, *set_standby_button, *edit_button;
+         *home_button, *pan_button, *ring_button, *set_active_button,
+         *set_standby_button, *edit_button;
 
   /**
    * Mark a parent browse-search as committed and close this form (no-op if
